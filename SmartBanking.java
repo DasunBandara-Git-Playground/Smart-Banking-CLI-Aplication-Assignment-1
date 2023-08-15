@@ -26,7 +26,9 @@ public class SmartBanking {
         String[] names = new String[0];
         double[] amounts = new double[0];
 
-        mainLoop:
+        int currentId;
+        String currentAccNum="";
+
         do{
             String title = String.format("\n\t\t%s%s%s",BLUE,screen,RESET);
             System.out.println(CLEAR);
@@ -123,7 +125,92 @@ public class SmartBanking {
                     screen = DB;
                     break;
                 
+                case DEPO:
                     
+                    loop2:
+                    do{
+                        
+                        System.out.print("\n\tEnter A/C No: ");
+                        String accNo = scan.nextLine().strip();
+                        //currentId = Integer.valueOf(accNo.substring(5));
+                        if(accNo.isBlank()){
+                            System.out.printf(ER_MSG,"A/C Number can,t be empty");
+                            System.out.print("\n\tDo you want to continue(Y/n): ");
+                            if(scan.nextLine().strip().toUpperCase().equals("Y")){
+                                continue;
+                            }
+                            screen = DB;
+                            break loop2;
+    
+                        }else{ 
+                            if(!(accNo.startsWith("SDB-") && accNo.length() == 9)){
+                                System.out.printf(ER_MSG,"Invalid A/C Number");
+                                System.out.print("\n\tDo you want to continue(Y/n): ");
+                                if(scan.nextLine().strip().toUpperCase().equals("Y")){
+                                    continue;
+                                }
+                                screen = DB;
+                                break loop2;
+                            }else{
+                                for (int i = 5; i < accNo.length(); i++) {
+                                    if(!(Character.isDigit(accNo.charAt(i)))){
+                                        System.out.printf(ER_MSG,"Invalid A/C Number");
+                                        System.out.print("\n\tDo you want to continue(Y/n): ");
+                                        if(scan.nextLine().strip().toUpperCase().equals("Y")){
+                                            continue loop2;
+                                        }
+                                        screen = DB;
+                                        break loop2;
+                                    }
+                                }
+                                currentAccNum = accNo;
+                                int count = 0;
+                                for (int i = 0; i < ids.length; i++) {
+                                    if(ids[i] == Integer.valueOf(accNo.substring(5))){
+                                        count++;
+                                        break loop2;
+                                    }
+                                }
+                                
+                                if(count==0){
+                                    System.out.printf(ER_MSG,"A/C Number not available in the List");
+                                    System.out.print("\n\tDo you want to continue(Y/n): ");
+                                    if(scan.nextLine().strip().toUpperCase().equals("Y")){
+                                        continue;
+                                    }
+                                    screen = DB;
+                                    break loop2;
+                                    
+                                }
+                                
+                            }
+                        }
+                        break;
+                        
+                    }while(true);
+                    currentId = Integer.valueOf(currentAccNum.substring(5));
+                    System.out.printf("\n\tCurrent Balance : Rs. %,.2f\n",amounts[currentId-1]);
+                    double dipositAmount;
+                    do{
+                        System.out.print("\n\tDeposit Amount: ");
+                        dipositAmount = scan.nextDouble();
+                        scan.nextLine();
+                        if(dipositAmount<500){
+                            continue;
+                        }
+                        break;
+                    }while (true);
+
+                    amounts[currentId-1] += dipositAmount;
+                    System.out.printf("\n\tNew Balance : Rs. %,.2f\n",amounts[currentId-1]);
+                    System.out.print("\n\tDo you want to continue(Y/n): ");
+                    if(scan.nextLine().strip().toUpperCase().equals("Y")){
+                        continue;
+                    }
+                    screen = DB;
+                    break;
+
+
             }
                         
         }while(true);
