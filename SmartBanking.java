@@ -26,13 +26,15 @@ public class SmartBanking {
         String[] names = new String[0];
         double[] amounts = new double[0];
 
-        int currentId;
-        String currentAccNum="";
-
+        mainLoop:
         do{
             String title = String.format("\n\t\t%s%s%s",BLUE,screen,RESET);
             System.out.println(CLEAR);
             System.out.println(title);
+
+            String name;
+            double amount;
+            String accNo;
 
             switch(screen){
                 case DB:
@@ -67,7 +69,7 @@ public class SmartBanking {
 
                     //Name Validation
                     
-                    String name;
+                    
                     loop1:
                     do{
                         System.out.print("\n\tName: ");
@@ -89,7 +91,7 @@ public class SmartBanking {
                     }while(true);
 
                     
-                    double amount;
+                    
                     do{
                         System.out.print("\n\tInitial Deposit: ");
                         amount = scan.nextDouble();
@@ -131,7 +133,7 @@ public class SmartBanking {
                     do{
                         
                         System.out.print("\n\tEnter A/C No: ");
-                        String accNo = scan.nextLine().strip();
+                        accNo = scan.nextLine().strip();
                         //currentId = Integer.valueOf(accNo.substring(5));
                         if(accNo.isBlank()){
                             System.out.printf(ER_MSG,"A/C Number can,t be empty");
@@ -140,7 +142,7 @@ public class SmartBanking {
                                 continue;
                             }
                             screen = DB;
-                            break loop2;
+                            continue mainLoop;
     
                         }else{ 
                             if(!(accNo.startsWith("SDB-") && accNo.length() == 9)){
@@ -150,7 +152,7 @@ public class SmartBanking {
                                     continue;
                                 }
                                 screen = DB;
-                                break loop2;
+                                continue mainLoop;
                             }else{
                                 for (int i = 5; i < accNo.length(); i++) {
                                     if(!(Character.isDigit(accNo.charAt(i)))){
@@ -160,10 +162,10 @@ public class SmartBanking {
                                             continue loop2;
                                         }
                                         screen = DB;
-                                        break loop2;
+                                        continue mainLoop;
                                     }
                                 }
-                                currentAccNum = accNo;
+
                                 int count = 0;
                                 for (int i = 0; i < ids.length; i++) {
                                     if(ids[i] == Integer.valueOf(accNo.substring(5))){
@@ -179,7 +181,7 @@ public class SmartBanking {
                                         continue;
                                     }
                                     screen = DB;
-                                    break loop2;
+                                    continue mainLoop;
                                     
                                 }
                                 
@@ -188,7 +190,7 @@ public class SmartBanking {
                         break;
                         
                     }while(true);
-                    currentId = Integer.valueOf(currentAccNum.substring(5));
+                    int currentId = Integer.valueOf(accNo.substring(5));
                     System.out.printf("\n\tCurrent Balance : Rs. %,.2f\n",amounts[currentId-1]);
                     double dipositAmount;
                     do{
